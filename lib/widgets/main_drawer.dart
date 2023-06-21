@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meals_app/widgets/main_drawer_list_tile.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  const MainDrawer({super.key, required this.onSelectMenuOption});
+  final void Function(String identifier) onSelectMenuOption;
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +41,26 @@ class MainDrawer extends StatelessWidget {
               ],
             ),
           ),
-          const DrawerTile(icon: Icons.restaurant, title: 'Meals'),
-          const DrawerTile(icon: Icons.settings, title: 'Settings'),
-          const DrawerTile(icon: Icons.payment, title: 'Payment'),
-          const DrawerTile(icon: Icons.logout, title: 'Log out'),
+          DrawerTile(
+              icon: Icons.restaurant,
+              title: 'Meals',
+              onSelecetDrawerList: () {
+                onSelectMenuOption('meals');
+              }),
+          DrawerTile(
+              icon: Icons.filter_alt,
+              title: 'Filter',
+              onSelecetDrawerList: () {
+                onSelectMenuOption('filter');
+              }),
+          DrawerTile(
+              icon: Icons.settings,
+              title: 'Settings',
+              onSelecetDrawerList: () {
+                onSelectMenuOption('settings');
+              }),
+          //  DrawerTile(icon: Icons.payment, title: 'Payment',onSelecetDrawerList: (){}),
+          //  DrawerTile(icon: Icons.logout, title: 'Log out',onSelecetDrawerList: (){}),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/screens/categories.dart';
+import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 
@@ -59,6 +60,19 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+// function to set screen navigations for drawer options
+  void _setScreen(String identifeir) async {
+    Navigator.pop(context);
+    if (identifeir == 'filter') {
+      final result = await Navigator.of(context).push<Map<Filter, bool>>(
+        MaterialPageRoute(
+          builder: (context) => const Filterscreen(),
+        ),
+      );
+      print(result);
+    } else if (identifeir == 'settings') {}
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget actvePage = CategoriesScreen(
@@ -74,7 +88,7 @@ class _TabsScreenState extends State<TabsScreen> {
     }
 
     return Scaffold(
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(onSelectMenuOption: _setScreen),
       appBar: AppBar(
         elevation: 1,
         centerTitle: true,

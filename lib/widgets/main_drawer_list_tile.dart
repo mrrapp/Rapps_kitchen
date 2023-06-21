@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DrawerTile extends StatelessWidget {
-  const DrawerTile({super.key, required this.icon,required this.title});
+  const DrawerTile(
+      {super.key,
+      required this.icon,
+      required this.title,
+      required this.onSelecetDrawerList});
   final IconData icon;
   final String title;
-  
+  final void Function() onSelecetDrawerList;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,9 @@ class DrawerTile extends StatelessWidget {
               color: Theme.of(context).colorScheme.onBackground,
             ),
       ),
-      onTap: () {},
+      onTap: () {
+        onSelecetDrawerList();
+      },
     );
   }
 }
