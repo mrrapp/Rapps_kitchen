@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/data/dummy_data.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 
 import '../model/meal.dart';
+
+const kInitialFilters = {
+  Filter.gluttenFree: false,
+  Filter.lactoseFree: false,
+  Filter.vegan: false,
+  Filter.vegetarian: false,
+};
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({
@@ -18,6 +26,9 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   // making logic for the body
   int _selectedPageIndex = 0;
+
+  Map<Filter, bool> _selectedFilters = kInitialFilters;
+
 // showing message on clicking favorite button on meals page
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context)
@@ -37,6 +48,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   // function for adding or removing favorite meals
   final List<Meal> _favoriteMeals = [];
+
   void _updateFavoriteMeals(Meal meal) {
     // checking if meal is in favorite meal
     final mealExisting = _favoriteMeals.contains(meal);
@@ -55,9 +67,11 @@ class _TabsScreenState extends State<TabsScreen> {
 
   void _selectPage(int index) {
     //you need to set state to update UI
-    setState(() {
-      _selectedPageIndex = index;
-    });
+    setState(
+      () {
+        _selectedPageIndex = index;
+      },
+    );
   }
 
 // function to set screen navigations for drawer options
@@ -66,17 +80,38 @@ class _TabsScreenState extends State<TabsScreen> {
     if (identifeir == 'filter') {
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (context) => const Filterscreen(),
+          builder: (context) => Filterscreen(
+            currentFilters: _selectedFilters,
+          ),
         ),
       );
-      print(result);
+      setState(() {
+        _selectedFilters = result ?? kInitialFilters;
+      });
     } else if (identifeir == 'settings') {}
   }
 
   @override
   Widget build(BuildContext context) {
+    // below code is making a filter to get filtered meals
+    final availableMeals = dummyMeals.where((meal) {
+      if (_selectedFilters[Filter.gluttenFree]! && !meal.isGlutenFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+        return false;
+      }
+      return true;
+    }).toList();
     Widget actvePage = CategoriesScreen(
       onToggleFavorite: _updateFavoriteMeals,
+      availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
     if (_selectedPageIndex == 1) {
